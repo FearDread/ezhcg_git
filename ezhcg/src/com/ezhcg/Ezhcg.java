@@ -4,8 +4,8 @@
 // Port for Android version 2.3.3 and below.  											//
 // ==================================================================================== //
 // Design & Format code to use new industry programming standards: for Android 3.0 +    //
-// *** Use new Fragment methods, such as LoadManager etc..								//
-// *** Use AsyncTask methods to run network tasks in background threads.				//
+// *** Use new Fragment methods, such as LoadManager, FragmentManager etc..								//
+// *** Use AsyncTask methods to run network tasks (JSON Call) in background threads.				//
 // ==================================================================================== //
 
 package com.ezhcg;
