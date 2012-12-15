@@ -1,0 +1,45 @@
+<resources>
+
+    <string name="app_name">EZ_HCG</string>
+    <string name="title_activity_ezhcg">Ezhcg</string>
+    <string name="save_api_info">Make sure to save your API Key through the options menu before hitting the NEXT button!</string>
+    
+    <string name="menu_saveApi">Save API</string>
+    <string name="menu_delete">Delete API</string>
+
+    
+    <string name="defaultApi">AFF2rkPVlxtrgohO7fON2sNov2nktE</string>   
+    
+    <string name="errorApi">Please Enter your API Key, or click the link to find out how you get an API Key!</string>
+    
+    <string name="learn_where">Learn Where to get API..</string>
+    <string name="save">NEXT</string>
+    <string name="click_here">Click Hear</string>
+    <string name="pickdate">Pick Date</string>
+    
+    <string name="reminder"></string>
+    <string name="next">Next</string>
+    
+    <string name="apiHint">Enter API</string>
+    <string name="text">Your API:</string>
+    <string name="yourApi"></string>
+    <string name="dateSelect">DATE SELECTION</string>
+    
+    <string name="startDate">Start Date</string>
+    <string name="endDate">End Date</string>
+    <string name="ezHcg">EZ HCG</string>
+    
+    <string name="instructions">GET YOUR API!</string>
+    <string name="instTitle">To get you API you will need to do the following on your computer:</string>
+    <string name="instLine1">1: Login in to http://ezwellness.hasoffers.com</string>
+    <string name="instLine2">2: Hover your mouse over “Support”</string>
+    <string name="instLine3">3: Click on “Offers API”</string>
+    <string name="instLine4">4: On this page you will find a line that says “Your API Key is”</string>
+    <string name="instfooter">That is it you have now found your API key and are ready to start using this Android App!</string>
+    
+    <string name="emailMe">Have any questions?  E-Mail me at admin@hcgdietteam.com</string>
+    <string name="thankYou">Thank You for using Ez HCG Drops Affiliate Program and HCG Diet Team</string>
+    
+    <string name="footer">Copyright @ ezhcg</string>
+    
+</resources>

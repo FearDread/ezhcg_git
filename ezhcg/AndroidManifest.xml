@@ -1,0 +1,46 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ezhcg"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+         />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
+        android:icon="@drawable/hcg_icon"
+        android:label="@string/app_name"
+        android:allowBackup="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.ezhcg.ui.EzhcgSplashScreen"
+            android:label="@string/title_activity_ezhcg" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Ezhcg"
+            android:label="@string/title_activity_ezhcg" >
+        </activity>       
+        <activity
+            android:name="com.ezhcg.ui.EzhcgDateView"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.ezhcg.ui.EzhcgListView"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.ezhcg.ui.EzhcgInstructionView"
+            android:label="@string/app_name" >
+        </activity>
+         	<provider
+      			android:name="com.ezhcg.util.EzhcgContentProvider"
+      			android:authorities="com.ezhcg.util.EzhcgContentProvider" >
+   			</provider>
+    </application>
+
+</manifest>
