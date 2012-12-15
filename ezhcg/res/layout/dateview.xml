@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+    
+    <ImageView
+        android:id="@+id/logoImage1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/dateSelect"
+        android:layout_width="fill_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/logoImage1"
+        android:hint="@string/dateSelect"
+        android:text="@string/dateSelect"
+        android:gravity="center"
+        android:layout_marginTop="45dp"
+        android:textColor="#4682B4"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/dateSelect"
+        android:layout_marginTop="30dp"
+        android:hint="@string/text"
+        android:text="@string/text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/api"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/dateSelect"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@id/text"
+        android:hint="@string/reminder"
+        android:text="@string/reminder"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/startDate"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:textSize="15sp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/api"
+        android:layout_marginTop="30dp" />
+
+    <com.ezhcg.ui.custom.EzhcgAutoBgButton
+        android:id="@+id/startDateBtn"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/startDate"
+        android:background="@drawable/button_blue_bg"
+        android:text="@string/startDate"
+        android:textSize="15sp"
+        android:width="40dp" />
+    
+         <ImageView
+        	android:id="@+id/imageView2"
+        	android:layout_width="150dp"
+        	android:layout_height="150dp"
+        	android:layout_below="@id/startDateBtn"
+        	android:layout_alignParentRight="true"
+        	android:src="@drawable/dollar_sign" />
+
+    <TextView
+        android:id="@+id/endDate"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:textSize="15sp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/startDateBtn"
+        android:layout_marginTop="30dp" />
+
+    <com.ezhcg.ui.custom.EzhcgAutoBgButton
+        android:id="@+id/endDateBtn"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/endDate"
+        android:background="@drawable/button_blue_bg"
+        android:text="@string/endDate"
+        android:textSize="15sp"
+        android:width="40dp" />
+
+    <com.ezhcg.ui.custom.EzhcgAutoBgButton
+        android:id="@+id/Button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/endDateBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="55dp"
+        android:background="@drawable/button_blue_bg"
+        android:text="@string/next"
+        android:textSize="20dp"
+        android:width="50dp" />
+    
+</RelativeLayout>
