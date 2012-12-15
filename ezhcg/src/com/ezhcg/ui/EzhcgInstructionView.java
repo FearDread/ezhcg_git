@@ -1,5 +1,9 @@
 // Author: Garrett Haptonstall //
-// =========================== //
+// =========================== // ===================================================== //
+// INFO:																				//
+// This View is done entirely programmatically for both performance testing and         //
+// to learn how to do it in the first place. :)                                         //
+// ==================================================================================== //
 
 package com.ezhcg.ui;
 
@@ -54,13 +58,13 @@ public class EzhcgInstructionView extends Activity {
 			mFooter = getString(R.string.footer);
 			
 			
-				// Programmatically display instructions screen
+				// programmatically display instructions screen
 				ImageView iv1 = new ImageView(this);
 				iv1.setImageResource(R.drawable.logo);
 				iv1.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				
 				  	myScrollView = new ScrollView(this);
-				    myScrollView.setBackgroundColor(0xfff00fff);
+				    myScrollView.setBackgroundColor(0x000000);
 				    myScrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
 				TextView tv1 = new TextView(this);
@@ -117,16 +121,6 @@ public class EzhcgInstructionView extends Activity {
 				tv9.setGravity(Gravity.LEFT);
 				tv9.setText(mFooter);
 				
-						myScrollView.addView(tv1);
-						myScrollView.addView(tv2);
-						myScrollView.addView(tv3);
-						myScrollView.addView(tv4);
-						myScrollView.addView(tv5);
-						myScrollView.addView(tv6);
-						myScrollView.addView(tv7);
-						myScrollView.addView(tv8);
-						myScrollView.addView(tv9);
-
 					LinearLayout ll = new LinearLayout(this);		
 				
 					LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -136,11 +130,21 @@ public class EzhcgInstructionView extends Activity {
 							ll.setLayoutParams(layoutParams);
 				
 							ll.setGravity(Gravity.TOP);
+							// Scroll View can only have 1 child, so put the linear layout and its children inside the ScrollView //
+							myScrollView.addView(ll);
 							
-					ll.addView(iv1);
-					ll.addView(myScrollView);
+								ll.addView(iv1);
+								ll.addView(tv1);
+								ll.addView(tv2);
+								ll.addView(tv3);
+								ll.addView(tv4);
+								ll.addView(tv5);
+								ll.addView(tv6);
+								ll.addView(tv7);
+								ll.addView(tv8);
+								ll.addView(tv9);
 
-				setContentView(ll);
+				setContentView(myScrollView);
 		}
 
 }
