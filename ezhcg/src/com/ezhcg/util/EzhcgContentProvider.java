@@ -29,7 +29,7 @@ public class EzhcgContentProvider extends ContentProvider {
   private static final int API_ID = 20;
 
   private static final String AUTHORITY = "com.ezhcg.util.EzhcgContentProvider";
-  private static final String BASE_PATH = "apikeys";
+  private static final String BASE_PATH = "ezhcgApiKeys";
   
   public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
 

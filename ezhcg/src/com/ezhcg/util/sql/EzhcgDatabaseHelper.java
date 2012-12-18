@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class EzhcgDatabaseHelper extends SQLiteOpenHelper {
 
-  private static final String DATABASE_NAME = "apikeys.db";
+  private static final String DATABASE_NAME = "EzhcgApiKeys.db";
   private static final int DATABASE_VERSION = 1;
 
   public EzhcgDatabaseHelper(Context context) {

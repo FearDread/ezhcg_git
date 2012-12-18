@@ -16,8 +16,10 @@ import com.ezhcg.util.EzhcgContentProvider;
 import com.ezhcg.util.sql.EzhcgApiTable;
 
 import android.app.LoaderManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -49,35 +51,39 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
 	private EditText enteredApi;
 	private String apiDefaultValue;
 	
-	
 	private static final int ACTIVITY_CREATE = 0;
 	private static final int DELETE_ID = Menu.FIRST + 1;
 	
 	// private Cursor cursor;
 	private SimpleCursorAdapter adapter;
+	private ContentValues ContentValues;
+	private Uri ApiTableUri;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        ApiTableUri = EzhcgContentProvider.CONTENT_URI;
         	btn1 = (Button)findViewById(R.id.saveButton);
         	btn2 = (Button)findViewById(R.id.clickButton);
         
-        		enteredApi = (EditText)findViewById(R.id.editApi);        
-        		apiDefaultValue = getString(R.string.defaultApi);
-        
-        		enteredApi.setText(apiDefaultValue);
-        		enteredApi.setOnTouchListener( new OnTouchListener() {
-        			@Override
-        			public boolean onTouch(View v, MotionEvent event) {
-        				if (enteredApi.getText().toString().equals(apiDefaultValue)) {
-        					enteredApi.setText("");
-        				}
-                    return false;
-        			}
-        		});
+        		enteredApi = (EditText)findViewById(R.id.editApi);                	
+        	    enteredApi.setText(apiDefaultValue);
         	    
+        		
+        	    // enteredApi.setOnTouchListener( new OnTouchListener() {
+        		//	@Override
+        		//	public boolean onTouch(View v, MotionEvent event) {
+        		//		if (enteredApi.getText().toString().equals(apiDefaultValue)) {
+        		//			enteredApi.setText("");
+        		//		}
+                //    return false;
+        		//	}
+        		// });
+        		
+        		
+        	    //  getApi(ApiTableUri);
         		 
         	   btn1.setOnClickListener(new OnClickListener() {
         		   	
@@ -124,12 +130,10 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
 		   							toRun.start();
 				
         	   					}	   
-        		   
-        		   
-        	  
         	   				});
         
-    }
+    					}
+    
     // Save API to SQL Table 
     // Settings / Options menu
     @Override
@@ -179,13 +183,36 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
 // ================= //
 	
     	private void saveApi() {
-
+    		String ApiKey = (String) enteredApi.getText().toString();
+    		
+    		ContentValues values = new ContentValues();
+						  values.put(EzhcgApiTable.COLUMN_API_KEY, ApiKey);
+				
+				if (ApiTableUri == null) {
+					
+					ApiTableUri = getContentResolver().insert(EzhcgContentProvider.CONTENT_URI, values);
+				
+				} else {
+					
+					getContentResolver().update(ApiTableUri, values, null, null);
+				}
 		
     	}
     	
-    	private void getApi() {
+    	private void getApi(Uri uri) {
+    		String [] projection = { EzhcgApiTable.COLUMN_API_KEY };
     		
+    		Cursor cursor = getContentResolver().query(EzhcgContentProvider.CONTENT_URI,  projection,  null,  null,  null);
     		
+    			if (cursor != null) {
+    				cursor.moveToFirst();
+    				
+    				enteredApi.setText(cursor.getString(cursor
+    						.getColumnIndexOrThrow(EzhcgApiTable.COLUMN_API_KEY)));
+    				
+    				cursor.close();
+    				return;
+    			} 
     	}
     
        

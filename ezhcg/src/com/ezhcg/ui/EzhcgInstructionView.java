@@ -42,9 +42,7 @@ public class EzhcgInstructionView extends Activity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			
-
-			
+				
 			mInst = getString(R.string.instructions);
 			
 			mInstTitle = getString(R.string.instTitle);
@@ -53,9 +51,9 @@ public class EzhcgInstructionView extends Activity {
 			mInstLine3 = getString(R.string.instLine3);
 			mInstLine4 = getString(R.string.instLine4);
 
-			mEmailMe = getString(R.string.emailMe);
+			mEmailMe  = getString(R.string.emailMe);
 			mThankYou = getString(R.string.thankYou);
-			mFooter = getString(R.string.footer);
+			mFooter   = getString(R.string.footer);
 			
 			
 				// programmatically display instructions screen

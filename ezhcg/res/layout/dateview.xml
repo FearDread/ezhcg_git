@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="fill_parent" >
+    
+   <RelativeLayout 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:paddingLeft="16dp"
@@ -21,7 +25,7 @@
         android:hint="@string/dateSelect"
         android:text="@string/dateSelect"
         android:gravity="center"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="5dp"
         android:textColor="#4682B4"
         android:textSize="30sp" />
 
@@ -105,3 +109,4 @@
         android:width="50dp" />
     
 </RelativeLayout>
+</ScrollView>
