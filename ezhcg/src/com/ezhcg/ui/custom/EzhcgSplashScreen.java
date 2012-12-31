@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-@SuppressWarnings("deprecation")
+
 public class EzhcgSplashScreen extends Activity {
 	//how long until we go to the next activity
 	protected int _splashTime = 5000;
@@ -30,8 +30,7 @@ public class EzhcgSplashScreen extends Activity {
 					@Override
 		            public void run() {
 		                try {                  
-		                    synchronized(this){
-		 
+		                    synchronized(this){	 
 		                        //wait 5 sec
 		                        wait(_splashTime);
 		                    }
@@ -42,11 +41,13 @@ public class EzhcgSplashScreen extends Activity {
 		                    finish();
 		 
 		                    //start a new activity
-		                    Intent i = new Intent();
-		                    i.setClass(sPlashScreen, Ezhcg.class);
-		                    startActivity(i);
+		                    Intent mainIntent = new Intent();
+		                    	   mainIntent.setClass(sPlashScreen, Ezhcg.class);
+		                    	   
+		                    	   startActivity(mainIntent);
 		 
-		                    stop();
+		                    // Removed, caused API 3.0 + to crash upon stopping the thread, (depreciated method)
+		                    // stop();
 		                }
 		            }
 	        };
