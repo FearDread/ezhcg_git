@@ -4,16 +4,17 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="8"
          />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:icon="@drawable/hcg_icon"
         android:label="@string/app_name"
         android:allowBackup="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.ezhcg.ui.EzhcgSplashScreen"
+            android:name="com.ezhcg.ui.custom.EzhcgSplashScreen"
             android:label="@string/title_activity_ezhcg" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,10 +38,5 @@
             android:name="com.ezhcg.ui.EzhcgInstructionView"
             android:label="@string/app_name" >
         </activity>
-         	<provider
-      			android:name="com.ezhcg.util.EzhcgContentProvider"
-      			android:authorities="com.ezhcg.util.EzhcgContentProvider" >
-   			</provider>
     </application>
-
 </manifest>

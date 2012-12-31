@@ -10,32 +10,29 @@ package com.ezhcg.ui;
 
 
 import java.util.Calendar;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.ProgressDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import com.ezhcg.R;
-import com.ezhcg.util.DateDialogFragment;
-import com.ezhcg.util.EzhcgDateFragment;
-import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
 
 
-/** public class EzhcgDateView extends FragmentActivity implements EzhcgDateFragmentButtonListener { **/
-	public class EzhcgDateView extends Activity {
+
+@SuppressWarnings("deprecation")
+public class EzhcgDateView extends Activity {
 	
 	protected static final int END_DATE_DIALOG_ID = 0;
 	protected static final int START_DATE_DIALOG_ID = 1;
-	
-	public static final String BUNDLE_KEY_DATE_ID = "date_id";	
-	private static final String DATE_PICKER_TAG = "DateDialogFragment";
+	protected static final int PROGRESS_BAR_ID = 3;
 	
 	private TextView mStartDate; 
 	private TextView mEndDate;
@@ -51,6 +48,9 @@ import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
 	private Button mPickEndDate;
 	private Button mListView;
 
+	private ProgressDialog pDialog;
+	private Bundle extras;
+	 	 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +63,7 @@ import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
         mPickEndDate = (Button) findViewById(R.id.endDateBtn);
         mListView = (Button) findViewById(R.id.Button1);
         
-    	final Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
     	
     		if (extras != null) {
     	    
@@ -78,8 +78,6 @@ import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
     			}
     		
          	mPickStartDate.setOnClickListener(new View.OnClickListener() {
-
-    			@SuppressWarnings("deprecation")
     			@Override
     			public void onClick(View v) {
 
@@ -97,9 +95,7 @@ import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
             // display the current date
             updateStartDisplay();
             
-        	mPickEndDate.setOnClickListener(new View.OnClickListener() {
-
-    			@SuppressWarnings("deprecation")
+        	mPickEndDate.setOnClickListener(new View.OnClickListener() {  			
     			@Override
     			public void onClick(View v) {
 
@@ -116,34 +112,13 @@ import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
 
             // display the current date
             updateEndDisplay();
-    	   	  	
-
-        
+    	   	  	        
         	mListView.setOnClickListener(new OnClickListener() {
-      			
-   				@Override
-   				public void onClick(View v) {
-   	    			Thread toRun = new Thread()
-     		       {
-     		              public void run()
-     		              {
-  		                     mStartDateString = mStartDate.getText().toString();
-  		                     mEndDateString = mEndDate.getText().toString();
-  		                     enteredApiString = extras.getString("enteredApi");
-  		                     
-     		            	     Bundle data = new Bundle();
-     		            	     
-     		            	     data.putStringArray("jsonData", new String[] {mStartDateString, mEndDateString, enteredApiString});
-     		                     Intent myIntent = new Intent (getApplicationContext(), EzhcgListView.class);
-     		                     
-     		                     myIntent.putExtras(data);
-     		                     
-     		                     startActivity(myIntent);
-     		              }
-     		       };
-     		       toRun.start();
-   				}
-    
+                @Override
+                public void onClick(View v) {
+                    // starting new Async Task
+                    new LoadDataTask().execute();
+                }
    			});
         
         
@@ -183,6 +158,17 @@ import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
 				        return new DatePickerDialog(this,
 				        			mEndDateSetListener,
 				                    mYear, mMonth, mDay);
+				        
+		    		case PROGRESS_BAR_ID: // we set this to 3
+		        		pDialog = new ProgressDialog(this);
+		        		pDialog.setMessage("Downloading data. Please wait...");
+		        		pDialog.setIndeterminate(false);
+		        		pDialog.setMax(100);
+		        		pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		        		pDialog.setCancelable(true);
+		        		pDialog.show();
+		            
+		        		return pDialog;
 				    }
 				    return null;
 				}
@@ -207,57 +193,86 @@ import com.ezhcg.util.EzhcgDateFragment.EzhcgDateFragmentButtonListener;
 				.append(mMonth + 1).append("-")
 				.append(mDay));
 		}
+	
+	
+	
+	// Loading Screen Async Task
+	private class LoadDataTask extends AsyncTask<Void, Integer, Void> { 
+	        //Before running code in separate thread  
+	        @Override  
+	        protected void onPreExecute()  
+	        {  
+	            super.onPreExecute();
+	            showDialog(PROGRESS_BAR_ID);  
+	        }  
+	  
+	        //The code to be executed in a background thread.  
+	        @Override  
+	        protected Void doInBackground(Void... params)  
+	        {  
+	            try  
+	            {  
+	                //Get the current thread's token  
+	                synchronized (this)  
+	                {  
+	                    //Initialize an integer (that will act as a counter) to zero  
+	                    int counter = 0;   
+	                    while(counter <= 4)  
+	                    {  
+	                        //Wait 850 milliseconds  
+	                        this.wait(850);  
+	                        counter++;  
+	                        publishProgress(counter*25);  
+	                    }  
+	                }  
+	            }  
+	            catch (InterruptedException e)  
+	            {  
+	                e.printStackTrace();  
+	            }  
+	            return null;  
+	        }  
+	  
+	        //Update the progress  
+	        @Override  
+	        protected void onProgressUpdate(Integer... values)  
+	        {  
+	            //set the current progress of the progress dialog  
+	        	pDialog.setProgress(values[0]);  
+	        }  
+	  
+	        //after executing the code in the thread  
+	        @Override  
+	        protected void onPostExecute(Void result)  
+	        {  
+	            //close the progress dialog  
+	        	pDialog.dismiss();  
+	        	extras = getIntent().getExtras();
+	            //initialize the View and ListView class in new thread
+				Thread toRun = new Thread()
+			       {
+			              public void run()
+			              {
+			                     mStartDateString = mStartDate.getText().toString();
+			                     mEndDateString = mEndDate.getText().toString();
+			                     enteredApiString = extras.getString("enteredApi");
+			                     
+	  		            	     Bundle data = new Bundle();
+	  		            	     
+	  		            	     data.putStringArray("jsonData", new String[] {mStartDateString, mEndDateString, enteredApiString});
+	  		                     Intent myIntent = new Intent (getApplicationContext(), EzhcgListView.class);
+	  		                     
+	  		                     myIntent.putExtras(data);
+	  		                     
+	  		                     startActivity(myIntent);
+			            	              	  
+			              }
+			       };
+			       toRun.start();
+	          	  
+	        }  
+	    }  
+
 	}
 
-
-/** NEW METHODS **/
-/** Uses new Fragment Classes 
-//-----------------------------------------------------//
-// EzhcgDateFragment interface                         //
-//-----------------------------------------------------//
-@Override
-public void onSetDateButtonClicked(Calendar date) {
-	// TODO Auto-generated method stub
-	//create new DateDialogFragment
-	DateDialogFragment ddf = DateDialogFragment.newInstance(this, R.string.set_date, date);
-
-		ddf.setDateDialogFragmentListener(new DateDialogFragmentListener() {
-
-			@Override
-			public void dateDialogFragmentDateSet(Calendar date) {
-				EzhcgDateFragment edf = (EzhcgDateFragment)getSupportFragmentManager().findFragmentById(R.id.date_detail_fragment);
-				// update the fragment
-				edf.updateDate(date);
-			}
-		});
-
-		ddf.show(getSupportFragmentManager(), DATE_PICKER_TAG);
-	}
-
-	@Override
-	protected void onPause() {
-		DateDialogFragment ddf = (DateDialogFragment)getSupportFragmentManager().findFragmentByTag(DATE_PICKER_TAG);
-		
-			if (ddf!=null){
-				ddf.dismiss();
-
-			}
-
-			super.onPause();
-		}
-	}
-
-
-	
-}
-	
-
-/** OLD METHODS **?
-	
-/**
-
-	
-
-**/	
- 
 	

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/splash"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/ezhcg_background" >
+  
+    <ImageView 
+    	android:src="@drawable/splashpage" 
+    	android:id="@+id/imageView1" 
+    	android:layout_marginTop="110dp"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content">
+    	</ImageView>
+  
+ 
+ 
+</LinearLayout>

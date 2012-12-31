@@ -6,13 +6,15 @@ package com.ezhcg.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,7 +29,9 @@ import android.widget.Toast;
 import com.ezhcg.R;
 import com.ezhcg.web.JSONParser;
 
+@SuppressWarnings("deprecation")
 public class EzhcgListView extends ListActivity {
+	protected static final int REFRESH_BAR_ID = 0;
 	
 	// JSON Node names
 	private static final String TAG_DATA = "data";
@@ -39,7 +43,8 @@ public class EzhcgListView extends ListActivity {
 	private static final String TAG_ERPC = "erpc";
 	private static final String TAG_CPL = "cpl";
 
-
+	private ProgressDialog aDialog;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,18 +125,92 @@ public class EzhcgListView extends ListActivity {
  	               
  	               lv.setTextFilterEnabled(true);
  	               
- 	               lv.setOnItemClickListener(new OnItemClickListener() {
- 	               	
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {        		
- 	          @SuppressWarnings("unchecked")
- 	       	  HashMap<String, String> jsonDataList = (HashMap<String, String>) lv.getItemAtPosition(position);
- 	               		
- 	          Toast.makeText(EzhcgListView.this, "Week '" + jsonDataList.get("week") + "' was clicked.", Toast.LENGTH_SHORT).show(); 
+ 	               lv.setOnItemClickListener(new OnItemClickListener() { 	               	
+ 	            	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {        			            		   
+ 	            		   // Attach alert Dialog to onItemClick 
+ 	            		   refreshList();
+ 	            	   }
+ 	               });
+    	};
+    	
+		@Override
+		protected Dialog onCreateDialog(int id) {
+		    switch (id) {
+		        
+    		case REFRESH_BAR_ID: // we set this to 3
+    			aDialog = new ProgressDialog(this);
+    			aDialog.setMessage("Refreshing data. Please wait...");
+    			aDialog.setIndeterminate(false);
+    			aDialog.setMax(100);
+    			aDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    			aDialog.setCancelable(true);
+    			aDialog.show();
+            
+        		return aDialog;
+		    }
+		    return null;
+		}
+    
+// Private Functions //
+// ================= //
 
-        
-       	   	}
-       	});
-    };
+private void refreshList() {
+	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	
+	builder.setMessage("Refresh your data list?")
+	       .setCancelable(true)
+	       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	        	   // starting new Async Task
+                   new RefreshDataTask().execute();        	   
+	           }
+	       });
+	
+		AlertDialog alert = builder.create();
+	
+		alert.show();		
+	}
+
+// Loading Screen Async Task
+private class RefreshDataTask extends AsyncTask<Void, Integer, Void> {      
+		@Override  
+        protected void onPreExecute() {  
+            super.onPreExecute();
+            showDialog(REFRESH_BAR_ID);  
+        }  
+ 
+        @Override  
+        protected Void doInBackground(Void... params) {  
+            try  
+            {   
+                synchronized (this) {    
+                    int counter = 0;   
+                    while(counter <= 4) {  
+                        this.wait(450);  
+                        counter++;  
+                        publishProgress(counter*25);  
+                    }  
+                }  
+            }  
+            catch (InterruptedException e)  
+            {  
+                e.printStackTrace();  
+            }  
+            return null;  
+        }  
+   
+        @Override  
+        protected void onProgressUpdate(Integer... values) {  
+          	aDialog.setProgress(values[0]);  
+        }  
+         //after executing the code in the thread  
+        @Override  
+        protected void onPostExecute(Void result) {  
+            //close the progress dialog  
+        	aDialog.dismiss();
+        	Toast.makeText(EzhcgListView.this, "Data Refreshed.", Toast.LENGTH_LONG).show();
+        }
+	} 
 }
         
        

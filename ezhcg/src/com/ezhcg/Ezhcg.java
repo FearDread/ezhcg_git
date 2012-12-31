@@ -1,20 +1,19 @@
 // Author: Garrett Haptonstall //
-// =========================== // ===================================================== //
-// TO-DO:																				//
-// Port for Android version 2.3.3 and below.  											//
-// ==================================================================================== //
-// Design & Format code to use new industry programming standards: for Android 3.0 +    //
-// *** Use new Fragment methods, such as LoadManager, FragmentManager etc..								//
-// *** Use AsyncTask methods to run network tasks (JSON Call) in background threads.				//
-// ==================================================================================== //
+// =========================== //
 
 package com.ezhcg;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 import com.ezhcg.ui.EzhcgDateView;
 import com.ezhcg.ui.EzhcgInstructionView;
-import com.ezhcg.util.EzhcgContentProvider;
-import com.ezhcg.util.sql.EzhcgApiTable;
 
+import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +23,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -38,59 +38,53 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@SuppressLint("SdCardPath")
 @SuppressWarnings("unused")
-public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class Ezhcg extends Activity {
 	
 	private Button btn1;
 	private Button btn2;
 	
-	private EditText enteredApi;
+	private EditText entApi;
 	private String apiDefaultValue;
 	
 	private static final int ACTIVITY_CREATE = 0;
 	private static final int DELETE_ID = Menu.FIRST + 1;
 	
-	// private Cursor cursor;
-	private SimpleCursorAdapter adapter;
-	private ContentValues ContentValues;
-	private Uri ApiTableUri;
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        ApiTableUri = EzhcgContentProvider.CONTENT_URI;
+        setContentView(R.layout.main);	
+        		
         	btn1 = (Button)findViewById(R.id.saveButton);
         	btn2 = (Button)findViewById(R.id.clickButton);
         
-        		enteredApi = (EditText)findViewById(R.id.editApi);                	
-        	    enteredApi.setText(apiDefaultValue);
-        	    
-        		
-        	    // enteredApi.setOnTouchListener( new OnTouchListener() {
-        		//	@Override
-        		//	public boolean onTouch(View v, MotionEvent event) {
-        		//		if (enteredApi.getText().toString().equals(apiDefaultValue)) {
-        		//			enteredApi.setText("");
-        		//		}
-                //    return false;
-        		//	}
-        		// });
-        		
-        		
-        	    //  getApi(ApiTableUri);
+        	apiDefaultValue = getString(R.string.defaultApi);
+        	
+        		entApi = (EditText)findViewById(R.id.editApi);                	
+        		entApi.setText(apiDefaultValue);
+        		entApi.setBackgroundColor(Color.WHITE);
+        	           		
+        		entApi.setOnTouchListener( new OnTouchListener() {
+        			@Override
+        			public boolean onTouch(View v, MotionEvent event) {
+        				if (entApi.getText().toString().equals(apiDefaultValue)) {
+        					entApi.setText("");
+        				}
+                    return false;
+        			}
+        		 });
         		 
-        	   btn1.setOnClickListener(new OnClickListener() {
-        		   	
+        	   btn1.setOnClickListener(new OnClickListener() {       		   	
        				@Override
        				public void onClick(View v) {
        					// Make sure an API is entered
-            		   	if (enteredApi.getText().toString().equals("")) {      		   		
+            		   	if (entApi.getText().toString().equals("")) {      		   		
             		   		// Show Toast error message
             		   		makeToastError();
             		 
@@ -102,7 +96,7 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
             		   								{
             		   									Intent myIntent = new Intent (getApplicationContext(), EzhcgDateView.class);
          		                     
-            		   									myIntent.putExtra("enteredApi", enteredApi.getText().toString());
+            		   									myIntent.putExtra("enteredApi", entApi.getText().toString());
          		                     
             		   									startActivity(myIntent);
             		   								}
@@ -118,7 +112,7 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
 
         	   					@Override
         	   					public void onClick(View v) {
-        	   						// TODO Auto-generated method stub
+        	   						
 		   							Thread toRun = new Thread() {
 		            		   			
 		   								public void run()
@@ -133,8 +127,7 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
         	   				});
         
     					}
-    
-    // Save API to SQL Table 
+
     // Settings / Options menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,83 +138,83 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
-      case R.id.menuSaveApi:
-        saveApi();
-        return true;
+      
+      	case R.id.menuSaveApi:
+      		saveApi();
+       		return true;
+      
+      	case R.id.menuPullApi:
+      		pullApi();
+      		return true;
+      		
       }
       return super.onOptionsItemSelected(item);
     }
     
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String [] projection = { EzhcgApiTable.COLUMN_ID, EzhcgApiTable.COLUMN_API_KEY };
-		
-			CursorLoader cursorLoader = new CursorLoader(this,
-					EzhcgContentProvider.CONTENT_URI, projection, null, null, null);
-		
-			return cursorLoader;
-	}
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		adapter.swapCursor(data);	
-	}
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
-	    // data is not available anymore, delete reference
-	    adapter.swapCursor(null);	
-	}
-	  // Add ability to delete API once one is saved
-	  @Override
-	  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-	    super.onCreateContextMenu(menu, v, menuInfo);
-	    menu.add(0, DELETE_ID, 0, R.string.menu_delete);
-	  }
-
-	  
-	  
 // Private Functions //
 // ================= //
-	
-    	private void saveApi() {
-    		String ApiKey = (String) enteredApi.getText().toString();
-    		
-    		ContentValues values = new ContentValues();
-						  values.put(EzhcgApiTable.COLUMN_API_KEY, ApiKey);
-				
-				if (ApiTableUri == null) {
-					
-					ApiTableUri = getContentResolver().insert(EzhcgContentProvider.CONTENT_URI, values);
-				
-				} else {
-					
-					getContentResolver().update(ApiTableUri, values, null, null);
-				}
+
+// Write Entered API to file on SD card
+private void saveApi() {
+	// write on SD card file data in the text box
+	try {
+		File myApiFile = new File("/sdcard/myhcgapi.txt");
 		
-    	}
-    	
-    	private void getApi(Uri uri) {
-    		String [] projection = { EzhcgApiTable.COLUMN_API_KEY };
-    		
-    		Cursor cursor = getContentResolver().query(EzhcgContentProvider.CONTENT_URI,  projection,  null,  null,  null);
-    		
-    			if (cursor != null) {
-    				cursor.moveToFirst();
-    				
-    				enteredApi.setText(cursor.getString(cursor
-    						.getColumnIndexOrThrow(EzhcgApiTable.COLUMN_API_KEY)));
-    				
-    				cursor.close();
-    				return;
-    			} 
-    	}
-    
-       
-    	private void makeToastError() {
-    		LayoutInflater inflater = getLayoutInflater();
+		myApiFile.createNewFile();
+		
+		FileOutputStream fOut = new FileOutputStream(myApiFile);
+		OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+		
+		myOutWriter.append(entApi.getText());
+		myOutWriter.close();
+		
+		fOut.close();
+		
+		Toast.makeText(getBaseContext(), "Done writing API to SD", Toast.LENGTH_LONG).show();
+		
+			} catch (Exception e) {
+		
+				Toast.makeText(getBaseContext(), e.getMessage(),
+						Toast.LENGTH_LONG).show();
+	}
+}
+
+// Pull API from file on SD card if there is one, put into text field
+private void pullApi() {
+
+	try {
+		File mApiFile = new File("/sdcard/myhcgapi.txt");
+		
+		FileInputStream mInput = new FileInputStream(mApiFile);
+		BufferedReader mReader = new BufferedReader(new InputStreamReader(mInput));
+		
+		String aDataRow = "";
+		String aBuffer = "";
+		
+			while ((aDataRow = mReader.readLine()) != null) {
+				aBuffer += aDataRow;
+			}
+			
+			entApi.setText(aBuffer);
+		
+			mReader.close();
+		
+			Toast.makeText(getBaseContext(), "Done pulling your API", Toast.LENGTH_LONG).show();
+	
+			} catch (Exception e) {
+		
+				Toast.makeText(getBaseContext(), e.getMessage(),
+						Toast.LENGTH_LONG).show();
+	}
+}
+
+// custom Toast error with image
+private void makeToastError() {
+    LayoutInflater inflater = getLayoutInflater();
         
-    		View layout = inflater.inflate(R.layout.toastview,
+    	View layout = inflater.inflate(R.layout.toastview,
     				
-    				(ViewGroup) findViewById(R.id.toastErrorLayout));
+    		(ViewGroup) findViewById(R.id.toastErrorLayout));
 
     		// set a dummy image
     		ImageView image = (ImageView) layout.findViewById(R.id.toastImage);
@@ -239,7 +232,4 @@ public class Ezhcg extends Activity implements LoaderManager.LoaderCallbacks<Cur
 			  toast.show();
     	
     	}
-	
-
-
 }

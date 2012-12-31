@@ -12,7 +12,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 
 import com.ezhcg.R;
-import com.ezhcg.util.sql.EzhcgDatesHelper;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -105,48 +104,48 @@ public class EzhcgDateFragment extends Fragment {
     public void updateDateId(long dateId){	
     	mDateId = dateId;
     	String[] projection = {"_id","date"};
-    	Uri queryUri = Uri.withAppendedPath(Uri.parse("content://"+EzhcgDatesProvider.AUTHORITY+"/dates"), String.valueOf(dateId));	
+    //	Uri queryUri = Uri.withAppendedPath(Uri.parse("content://"+EzhcgDatesProvider.AUTHORITY+"/dates"), String.valueOf(dateId));	
     	
     	//get the specified date from the db
-    	Cursor dateCursor = getActivity().getContentResolver().query(queryUri,
-    			projection, null, null,null);
+   // 	Cursor dateCursor = getActivity().getContentResolver().query(queryUri,
+  //  			projection, null, null,null);
 
-    	Calendar date = getDate(dateCursor);	
+  //  	Calendar date = getDate(dateCursor);	
     	
-    		setDate(date);
-    		updateUi(date);	
+  //  		setDate(date);
+  //  		updateUi(date);	
     }
 
     private void setDbDate(Calendar newDate){	
     	//get activity's content resolver and update
-    	Uri updateUri = Uri.withAppendedPath(Uri.parse("content://"+EzhcgDatesProvider.AUTHORITY+"/dates"),String.valueOf(mDateId));
+    // 	Uri updateUri = Uri.withAppendedPath(Uri.parse("content://"+EzhcgDatesProvider.AUTHORITY+"/dates"),String.valueOf(mDateId));
     	ContentValues newDateValues = new ContentValues();
     	
-    		newDateValues.put("date", EzhcgDatesHelper.SHORT_DATE_FORMAT.format(newDate.getTime()));
+    		// newDateValues.put("date", this.SHORT_DATE_FORMAT.format(newDate.getTime()));
     	
-    	getActivity().getContentResolver().update(updateUri, newDateValues, "_id=?", new String[]{String.valueOf(mDateId)});
+   // 	getActivity().getContentResolver().update(updateUri, newDateValues, "_id=?", new String[]{String.valueOf(mDateId)});
     }
 
     private Calendar getDate(Cursor dateCursor){
     	String shortDateStr = dateCursor.getString(dateCursor.getColumnIndex("date"));
 
     	Calendar date = Calendar.getInstance();
-    		try {
-    			date.setTime(EzhcgDatesHelper.SHORT_DATE_FORMAT.parse(shortDateStr));
+   // 		try {
+    			// date.setTime(EzhcgDatesHelper.SHORT_DATE_FORMAT.parse(shortDateStr));
     		
-    		} catch (ParseException e) {
+    		// } catch (ParseException e) {
 
-    			e.printStackTrace();
-    			}
+    	// 		e.printStackTrace();
+    	//		}
     		return date;
     }
 
 	private void updateUi(Calendar date){	
-		String shortDateStr = EzhcgDatesHelper.SHORT_DATE_FORMAT.format(date.getTime());
-		mStartDateText.setText(shortDateStr);	
+		 // String shortDateStr = EzhcgDatesHelper.SHORT_DATE_FORMAT.format(date.getTime());
+	//	mStartDateText.setText(shortDateStr);	
 
-		String longDateStr = EzhcgDatesHelper.LONG_DATE_FORMAT.format(date.getTime());
-		mEndDateText.setText(longDateStr);
+		// String longDateStr = EzhcgDatesHelper.LONG_DATE_FORMAT.format(date.getTime());
+	//	mEndDateText.setText(longDateStr);
 	}
 
 	public void setDate(Calendar newDate){
