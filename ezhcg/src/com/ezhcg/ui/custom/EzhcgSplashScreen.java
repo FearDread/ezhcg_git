@@ -26,40 +26,34 @@ public class EzhcgSplashScreen extends Activity {
 		        final EzhcgSplashScreen sPlashScreen = this;
 		 
 		        // thread for displaying the SplashScreen
-		        splashTread = new Thread() {	           
-					@Override
-		            public void run() {
+		        Thread splashTread = new Thread() {
+		              
+		        	public void run()
+		            {
 		                try {                  
-		                    synchronized(this){	 
+		                    synchronized(this) {	 
 		                        //wait 5 sec
 		                        wait(_splashTime);
 		                    }
 		 
 		                } catch(InterruptedException e) {}
-		                
-		                finally {
-		                    finish();
-		 
+
 		                    //start a new activity
 		                    Intent mainIntent = new Intent();
 		                    	   mainIntent.setClass(sPlashScreen, Ezhcg.class);
 		                    	   
 		                    	   startActivity(mainIntent);
-		 
-		                    // Removed, caused API 3.0 + to crash upon stopping the thread, (depreciated method)
-		                    // stop();
-		                }
-		            }
-	        };
-		 
+
+		            		}
+		        		};
 		        splashTread.start();
-		    }
+		    	}
 		 
 		    //Function that will handle the touch
 		    @Override
 		    public boolean onTouchEvent(MotionEvent event) {
 		        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-		            synchronized(splashTread){
+		            synchronized(splashTread) {
 		                splashTread.notifyAll();
 		            }
 		        }
