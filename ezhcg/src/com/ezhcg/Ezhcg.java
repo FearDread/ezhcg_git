@@ -46,190 +46,190 @@ import android.widget.Toast;
 @SuppressLint("SdCardPath")
 @SuppressWarnings("unused")
 public class Ezhcg extends Activity {
+  /* REFACTOR ALL CODE AND UNDERSTAND IT */
 	
-	private Button btn1;
-	private Button btn2;
-	
-	private EditText entApi;
-	private String apiDefaultValue;
-	
-	private static final int ACTIVITY_CREATE = 0;
-	private static final int DELETE_ID = Menu.FIRST + 1;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);	
-        		
-        	btn1 = (Button)findViewById(R.id.saveButton);
-        	btn2 = (Button)findViewById(R.id.clickButton);
-        
-        	apiDefaultValue = getString(R.string.defaultApi);
-        	
-        		entApi = (EditText)findViewById(R.id.editApi);                	
-        		entApi.setText(apiDefaultValue);
-        		entApi.setBackgroundColor(Color.WHITE);
-        	           		
-        		entApi.setOnTouchListener( new OnTouchListener() {
-        			@Override
-        			public boolean onTouch(View v, MotionEvent event) {
-        				if (entApi.getText().toString().equals(apiDefaultValue)) {
-        					entApi.setText("");
-        				}
-                    return false;
-        			}
-        		 });
-        		 
-        	   btn1.setOnClickListener(new OnClickListener() {       		   	
-       				@Override
-       				public void onClick(View v) {
-       					// Make sure an API is entered
-            		   	if (entApi.getText().toString().equals("")) {      		   		
-            		   		// Show Toast error message
-            		   		makeToastError();
-            		 
-            		   					} else {
-            		   							// If API is entered start date view in new thread
-            		   							Thread toRun = new Thread() {
-            		   			
-            		   								public void run()
-            		   								{
-            		   									Intent myIntent = new Intent (getApplicationContext(), EzhcgDateView.class);
-         		                     
-            		   									myIntent.putExtra("enteredApi", entApi.getText().toString());
-         		                     
-            		   									startActivity(myIntent);
-            		   								}
-            		   							};
-            		   						
-            		   							toRun.start();
-            		   						}
-       									} 	    		   
-       								});
-        	   
-        	   				// Call API Instructions view
-        	   				btn2.setOnClickListener(new OnClickListener() {
+  private Button btn1;
+  private Button btn2;
+  private EditText entApi;
+  private String apiDefaultValue;
 
-        	   					@Override
-        	   					public void onClick(View v) {
-        	   						
-		   							Thread toRun = new Thread() {
-		            		   			
-		   								public void run()
-		   								{
-		   									Intent myIntent = new Intent (getApplicationContext(), EzhcgInstructionView.class);	                     
-		   									startActivity(myIntent);
-		   								}
-		   							};
-		   							toRun.start();
-				
-        	   					}	   
-        	   				});
-        
-    					}
+  private static final int ACTIVITY_CREATE = 0;
+  private static final int DELETE_ID = Menu.FIRST + 1;
 
-    // Settings / Options menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }   
-    // Reaction to the menu selection
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-      switch (item.getItemId()) {
-      
-      	case R.id.menuSaveApi:
-      		saveApi();
-       		return true;
-      
-      	case R.id.menuPullApi:
-      		pullApi();
-      		return true;
-      		
+@Override
+public void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.main);	
+
+btn1 = (Button)findViewById(R.id.saveButton);
+btn2 = (Button)findViewById(R.id.clickButton);
+
+apiDefaultValue = getString(R.string.defaultApi);
+
+entApi = (EditText)findViewById(R.id.editApi);                	
+entApi.setText(apiDefaultValue);
+entApi.setBackgroundColor(Color.WHITE);
+
+entApi.setOnTouchListener( new OnTouchListener() {
+@Override
+public boolean onTouch(View v, MotionEvent event) {
+if (entApi.getText().toString().equals(apiDefaultValue)) {
+entApi.setText("");
+}
+return false;
+}
+});
+
+btn1.setOnClickListener(new OnClickListener() {       		   	
+@Override
+public void onClick(View v) {
+// Make sure an API is entered
+if (entApi.getText().toString().equals("")) {      		   		
+// Show Toast error message
+makeToastError();
+
+} else {
+    // If API is entered start date view in new thread
+    Thread toRun = new Thread() {
+
+      public void run()
+      {
+        Intent myIntent = new Intent (getApplicationContext(), EzhcgDateView.class);
+     
+        myIntent.putExtra("enteredApi", entApi.getText().toString());
+     
+        startActivity(myIntent);
       }
-      return super.onOptionsItemSelected(item);
-    }
-    
+    };
+  
+    toRun.start();
+  }
+} 	    		   
+});
+
+// Call API Instructions view
+btn2.setOnClickListener(new OnClickListener() {
+
+@Override
+public void onClick(View v) {
+
+Thread toRun = new Thread() {
+
+public void run()
+{
+Intent myIntent = new Intent (getApplicationContext(), EzhcgInstructionView.class);	                     
+startActivity(myIntent);
+}
+};
+toRun.start();
+
+}	   
+});
+
+}
+
+// Settings / Options menu
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+getMenuInflater().inflate(R.menu.main, menu);
+return true;
+}   
+// Reaction to the menu selection
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+switch (item.getItemId()) {
+
+case R.id.menuSaveApi:
+saveApi();
+return true;
+
+case R.id.menuPullApi:
+pullApi();
+return true;
+
+}
+return super.onOptionsItemSelected(item);
+}
+
 // Private Functions //
 // ================= //
 
 // Write Entered API to file on SD card
 private void saveApi() {
-	// write on SD card file data in the text box
-	try {
-		File myApiFile = new File("/sdcard/myhcgapi.txt");
-		
-		myApiFile.createNewFile();
-		
-		FileOutputStream fOut = new FileOutputStream(myApiFile);
-		OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-		
-		myOutWriter.append(entApi.getText());
-		myOutWriter.close();
-		
-		fOut.close();
-		
-		Toast.makeText(getBaseContext(), "Done writing API to SD", Toast.LENGTH_LONG).show();
-		
-			} catch (Exception e) {
-		
-				Toast.makeText(getBaseContext(), e.getMessage(),
-						Toast.LENGTH_LONG).show();
-	}
+// write on SD card file data in the text box
+try {
+File myApiFile = new File("/sdcard/myhcgapi.txt");
+
+myApiFile.createNewFile();
+
+FileOutputStream fOut = new FileOutputStream(myApiFile);
+OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+
+myOutWriter.append(entApi.getText());
+myOutWriter.close();
+
+fOut.close();
+
+Toast.makeText(getBaseContext(), "Done writing API to SD", Toast.LENGTH_LONG).show();
+
+} catch (Exception e) {
+
+Toast.makeText(getBaseContext(), e.getMessage(),
+Toast.LENGTH_LONG).show();
+}
 }
 
 // Pull API from file on SD card if there is one, put into text field
 private void pullApi() {
 
-	try {
-		File mApiFile = new File("/sdcard/myhcgapi.txt");
-		
-		FileInputStream mInput = new FileInputStream(mApiFile);
-		BufferedReader mReader = new BufferedReader(new InputStreamReader(mInput));
-		
-		String aDataRow = "";
-		String aBuffer = "";
-		
-			while ((aDataRow = mReader.readLine()) != null) {
-				aBuffer += aDataRow;
-			}
-			
-			entApi.setText(aBuffer);
-		
-			mReader.close();
-		
-			Toast.makeText(getBaseContext(), "Done pulling your API", Toast.LENGTH_LONG).show();
-	
-			} catch (Exception e) {
-		
-				Toast.makeText(getBaseContext(), e.getMessage(),
-						Toast.LENGTH_LONG).show();
-	}
+try {
+File mApiFile = new File("/sdcard/myhcgapi.txt");
+
+FileInputStream mInput = new FileInputStream(mApiFile);
+BufferedReader mReader = new BufferedReader(new InputStreamReader(mInput));
+
+String aDataRow = "";
+String aBuffer = "";
+
+while ((aDataRow = mReader.readLine()) != null) {
+aBuffer += aDataRow;
+}
+
+entApi.setText(aBuffer);
+
+mReader.close();
+
+Toast.makeText(getBaseContext(), "Done pulling your API", Toast.LENGTH_LONG).show();
+
+} catch (Exception e) {
+
+Toast.makeText(getBaseContext(), e.getMessage(),
+Toast.LENGTH_LONG).show();
+}
 }
 
 // custom Toast error with image
 private void makeToastError() {
-    LayoutInflater inflater = getLayoutInflater();
-        
-    	View layout = inflater.inflate(R.layout.toastview,
-    				
-    		(ViewGroup) findViewById(R.id.toastErrorLayout));
+LayoutInflater inflater = getLayoutInflater();
 
-    		// set a dummy image
-    		ImageView image = (ImageView) layout.findViewById(R.id.toastImage);
-				      image.setImageResource(R.drawable.ic_launcher);
+View layout = inflater.inflate(R.layout.toastview,
 
-				      // set a message
-				      TextView text = (TextView) layout.findViewById(R.id.toastText);
-				               text.setText(R.string.errorApi);
+(ViewGroup) findViewById(R.id.toastErrorLayout));
 
-		// Toast...
-		Toast toast = new Toast(getApplicationContext());
-			  toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-			  toast.setDuration(Toast.LENGTH_LONG);
-			  toast.setView(layout);
-			  toast.show();
-    	
-    	}
+// set a dummy image
+ImageView image = (ImageView) layout.findViewById(R.id.toastImage);
+image.setImageResource(R.drawable.ic_launcher);
+
+// set a message
+TextView text = (TextView) layout.findViewById(R.id.toastText);
+text.setText(R.string.errorApi);
+
+// Toast...
+Toast toast = new Toast(getApplicationContext());
+toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+toast.setDuration(Toast.LENGTH_LONG);
+toast.setView(layout);
+toast.show();
+
+}
 }
