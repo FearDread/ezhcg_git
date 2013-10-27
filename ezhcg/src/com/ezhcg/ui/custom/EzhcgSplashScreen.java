@@ -10,53 +10,43 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-
 public class EzhcgSplashScreen extends Activity {
-	//how long until we go to the next activity
-	protected int _splashTime = 5000;
-		 
-	private Thread splashTread;
-		 
-	    /** Called when the activity is first created. */
-	    @Override
-	    public void onCreate(Bundle savedInstanceState) {
-		     super.onCreate(savedInstanceState);
-		        setContentView(R.layout.splash);
-		 
-		        final EzhcgSplashScreen sPlashScreen = this;
-		 
-		        // thread for displaying the SplashScreen
-		        Thread splashTread = new Thread() {
-		              
-		        	public void run()
-		            {
-		                try {                  
-		                    synchronized(this) {	 
-		                        //wait 5 sec
-		                        wait(_splashTime);
-		                    }
-		 
-		                } catch(InterruptedException e) {}
 
-		                    //start a new activity
-		                    Intent mainIntent = new Intent();
-		                    	   mainIntent.setClass(sPlashScreen, Ezhcg.class);
-		                    	   
-		                    	   startActivity(mainIntent);
+  private long ms = 0;
+  private long splashTime = 4000;
 
-		            		}
-		        		};
-		        splashTread.start();
-		    	}
-		 
-		    //Function that will handle the touch
-		    @Override
-		    public boolean onTouchEvent(MotionEvent event) {
-		        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-		            synchronized(splashTread) {
-		                splashTread.notifyAll();
-		            }
-		        }
-		        return true;
-		    }
+  private boolean splashActive = true;
+  private boolean paused = false;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+
+    super.onCreate(savedInstanceState);
+
+    setContentView(R.layout.splash);
+
+    Thread splashThread = new Thread() {
+      
+      public void run() {
+      
+        try {
+          while(splashTime && ms < splashTime) {
+            
+            if(!paused) {
+
+              ms = ms + 100;
+              sleep(100);
+            }
+          }
+        } catch(Exception e) {} 
+        finally {
+           
+          Intent splash = new Intent(EzhcgSplashScreen.this, EzhcgSplashScreen.class);
+          startActivity(splash);
+        }
+      }
+    };
+
+    splashThread.start();
+  }
 }

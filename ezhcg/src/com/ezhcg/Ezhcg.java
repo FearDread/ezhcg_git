@@ -50,65 +50,68 @@ public class Ezhcg extends Activity {
 	
   private Button btn1;
   private Button btn2;
-  private EditText entApi;
+  private EditText enteredApi;
   private String apiDefaultValue;
 
   private static final int ACTIVITY_CREATE = 0;
   private static final int DELETE_ID = Menu.FIRST + 1;
 
-@Override
-public void onCreate(Bundle savedInstanceState) {
-super.onCreate(savedInstanceState);
-setContentView(R.layout.main);	
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.main);	
 
-btn1 = (Button)findViewById(R.id.saveButton);
-btn2 = (Button)findViewById(R.id.clickButton);
+    saveBtn  = (Button)findViewById(R.id.saveButton);
+    clickBtn = (Button)findViewById(R.id.clickButton);
 
-apiDefaultValue = getString(R.string.defaultApi);
+    apiDefaultValue = getString(R.string.defaultApi);
 
-entApi = (EditText)findViewById(R.id.editApi);                	
-entApi.setText(apiDefaultValue);
-entApi.setBackgroundColor(Color.WHITE);
+    enteredApi = (EditText)findViewById(R.id.editApi);                	
+    enteredApi.setText(apiDefaultValue);
+    enteredApi.setBackgroundColor(Color.WHITE);
+    enteredApi.setOnTouchListener( new OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        if (enteredApi.getText().toString().equals(apiDefaultValue)) {
 
-entApi.setOnTouchListener( new OnTouchListener() {
-@Override
-public boolean onTouch(View v, MotionEvent event) {
-if (entApi.getText().toString().equals(apiDefaultValue)) {
-entApi.setText("");
-}
-return false;
-}
-});
+          enteredApi.setText("");
+        }
 
-btn1.setOnClickListener(new OnClickListener() {       		   	
-@Override
-public void onClick(View v) {
-// Make sure an API is entered
-if (entApi.getText().toString().equals("")) {      		   		
-// Show Toast error message
-makeToastError();
-
-} else {
-    // If API is entered start date view in new thread
-    Thread toRun = new Thread() {
-
-      public void run()
-      {
-        Intent myIntent = new Intent (getApplicationContext(), EzhcgDateView.class);
-     
-        myIntent.putExtra("enteredApi", entApi.getText().toString());
-     
-        startActivity(myIntent);
+        return false;
       }
-    };
-  
-    toRun.start();
-  }
-} 	    		   
-});
 
-// Call API Instructions view
-btn2.setOnClickListener(new OnClickListener() {
+    });
+
+    saveBtn.setOnClickListener(new OnClickListener() {       		   	
+      @Override
+      public void onClick(View v) {
+        // Make sure an API is entered
+        if (enteredApi.getText().toString().equals("")) {      		   		
+
+          // Show Toast error message
+          makeToastError();
+        } else {
+        // If API is entered start date view in new thread
+          Thread dateThread = new Thread() {
+
+            public void run()  {
+
+              Intent dateView = new Intent (getApplicationContext(), EzhcgDateView.class);
+           
+              dateView.putExtra("enteredApi", enteredApi.getText().toString());
+         
+              startActivity(dateView);
+            }
+
+          };
+
+        dateThread.start();
+        }
+      } 	    		   
+    });
+
+  // Call API Instructions view
+  btn2.setOnClickListener(new OnClickListener() {
 
 @Override
 public void onClick(View v) {
